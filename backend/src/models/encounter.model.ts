@@ -1,4 +1,10 @@
+/* eslint-disable linebreak-style */
 import mongoose, { Schema, model } from 'mongoose';
+import mongoolia from 'mongoolia';
+
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 export interface EncounterModel {
   title: string,
@@ -16,6 +22,12 @@ const schema = new Schema<EncounterModel>({
   location: { type: String, required: false },
   description: { type: String, required: true },
   persons: { type: [mongoose.Types.ObjectId], required: true },
+});
+
+schema.plugin(mongoolia, {
+  appId: `${process.env.ALGOLIA_APP_ID}`,
+  apiKey: `${process.env.ALGOLIA_SECRET_KEY}`,
+  indexName: 'persons',
 });
 
 export default model<EncounterModel>('Encounter', schema);
